@@ -1,0 +1,213 @@
+			AND R6, R6, #0	; I'm clearing out R6 with 0
+
+Program_LOOP		LEA R1, x3048	; What I'm going to do here is load E the start
+					; of (E)nter into the first Register before I start looping
+	
+TOP_OF_LOOP1		LDR R0, R1, #0	; This is going to be the top of my first loop,
+					; I'm gloing to keep looping until
+					; the whole string phrase has finished and I've hit null.
+					; Specifically this instructions stores R1 which is E or the
+					; address x3048 and that is put into R0, because R0 will
+					; be used to display this character on the console.
+		
+			BRZ x3007	; I'm looping through the following memory addresses 
+					; Untill I get to x3007 which tells me to
+					; go to the TOP_OF_LOOP1 if the previous result
+					; is 0,-,+ which will always happen. There is no case where I won't
+					; go through this loop to x3007 and come back and repeat
+					; the instructions starting at the TOP_OF_LOOP 1.
+		
+			TRAP OUT	; This instruction will print out my first letter to the console
+					; as of now E, on the second pass of the loop it'll probably print
+					; n, then t, ect...
+		
+			ADD R1,R1, #1	; I'm adding 1 to R1, R1 was x3048, it'll now be x3049 
+					; This will give R1 the next character I for the prompt.
+		
+GO_TO_TOP_OF_LOOP1	BRNZP x3002	; Now it's saying to go to the TOP_OF_LOOP1 if
+					; the previous result is -,0,+ which it will always be
+					; till the whole string prompt has been completed.
+		
+OUT_OF_LOOP1		AND R0,R0, #0	; After I've finished cycling through the first loop
+					; and putting out the first string prompt;
+					; I clear out the first Register with 0
+					; because I don't want that register which is mostly
+					; used for output to have anything in it currently.
+		
+			LEA R1, x30A6	; I'm using the assembly instruction at this address to load
+					; nothing into this register.
+
+TOP_OF_LOOP2		TRAP GETC  	; This is where I'm going to get my input for the first password.
+					; This instruction will convert the hex value from whatever
+					; the user inputs into the console
+					; as an ascii character and reads it in.
+			
+			Trap OUT	; Here, we're going to actually display to the console the
+					; character read into the console.
+		
+			STR R0,R1,#0	; I'm now going to store whatever the address of R1 is which is nothing
+					; currently it contains the value x0000. I
+					; put that into the R0. Presumably so I can use this for printing
+					; from that register.
+			
+			ADD R1, R1,#1	; I'm adding 1 to the first register because it's going
+					; to have to cycle through and change the register value
+					; as values are input.
+			
+			LD R2, x3047	; Here I'm loading a new line character into R2
+					; Mostlikely to use after the whole first password
+					; has been inputted.
+
+			NOT R2, R2	; Here The condition codes for R2 are being set based
+					; off of 2's complement being -,+,0 for R2
+					; This will probably be useful for the looping
+					
+			AND R2, R2, 0	; What's going on here is that, R2 and 0 are being
+					; anded together for my loop check. This is basically 
+					; an if-else comparison for this register.
+
+GO_TO_TOP_OF_LOOP2	BRNP x3009	; Go to TOP_OF_LOOP2 if previous instruction is -,+
+					; Top_OF_LOOP2 is at the address x3009.
+					; I'm going to go pack input a character, it's going to read it
+					; it will then print out that character and continue through
+					; the loop till the password has been entered.
+			
+OUT_OF_LOOP_2		ADD R1, R1, #-1	; Here I'm adding -1 to R1
+
+			STR R2, R1, #0	; I'm storing the value of R1 into R2
+
+			LEA R1, x30A6	; I'm doing something very similar to earlier before I got input
+					; I'm loading nothing into R1
+
+			LEA R2, x3093	; Same thing as above, I'm using the Load Effective Address
+					; instruction to load nothing into R2.
+
+			ADD R6,R6, #0	; I'm Adding whatever is in R6 into R6. The + 0 has no change
+					; and what the value of this is.
+			
+			BRP x3022	; Ok, Here I'm saying to loop through the following instructions
+					; as long as the previous result is +, which it is untill
+					; I hit x3022 then repeat.
+			
+TOP_OF_LOOP_3		LDR R3,R1,#0	; I'm loading what's in R1 into R3
+
+			LDR R4,R2,#0	; I'm loading what's in R2 into R4
+
+			NOT R4,R4	; Again, similarily to an earlier loop I'm setting the condition
+					; codes for R4 based off of 2's complement of the previous integer value.
+					; This will be needed for looping through again mostlikely.
+
+			ADD R4, R4,#1	; I'm adding 1 to R4 presumably to make this result positive
+
+			ADD R4, R3, R4  ; I'm adding what's in R4 to R3 and putting that into R4
+
+			BRNP x3033	; I need to loop through the following addresses as long as
+					; the previous result is -,+ untill I hit x3033
+
+			ADD R3,R3,#0	; Here I'm simply making R3 into R3. The 0 doesn't change the value
+					; thus I'm wanting to make sure R3 is it's value.
+
+			BRZ x302B	; I need to loop through the following addresses untill I hit x302B
+					; as long as the previous result is -
+
+			ADD R1,R1,#1	; I'm adding 1 to R1 and storing that into R1
+
+			ADD R2,R2,#1	; I'm adding 1 to R2 and storing that into R2
+
+GO_TO_TOP_OF_LOOP3	BRNZP x3017	; Ok, now I need to loop back to x3017 as long as the previous
+					; result is -,0,+ which it will always be.
+
+			LEA R2,x3042	; I'm loading the Hex value q. This seem intresting
+			
+TOP_OF_LOOP4		LDR R0,R2,#0	; I'm now loading what R2 has in it into R0 which makes sense
+					; because if q is now in R2, and I need R2 to be in R0 to
+					; print out something then I need R2 to be loaded into R0
+					; ready for being put on screen.
+	
+			BRZ x3029	; I need to loop through the following instructions till I hit this
+					; address.
+
+			ADD R0,R0,#-4	; Now this is odd, no other place in this program has anything other
+					; than 1,0, or -1 been added to a register.
+					; It looks like this is going to change the value of R0 by 4 in hex.
+
+			STR R0, R2, #0	; I'm now storing the results of R2 into R0, probably for outputing
+					; another character.
+			
+			ADD R2,R2,#1	; I'm chaing the value of R2 by 1 and storing that in itself.
+
+GO_TO_TOP_OF_LOOP4	BRNZP x3023	; Time to loop back to x3023, mostlikely to run through this process
+					; for other characters.
+
+			LEA R2, x3042	; Now, for some reason I'm reloading the value at this address
+					; into the second register again.
+
+			
+			BRNZP x3017	; I need to loop farther back to x3017 as long as the previous
+					; result is -,0,+ which it is. This takes me to the TOP_OF_LOOP3.
+					
+			
+			LEA R1,x3070	; I'm loading the HEX value/ASCII character of this address into
+					; R1 which is P	
+
+TOP_OF_LOOP5		LDR R0,R1,#0	; I'm loading R1 into R0 probably because I want to display something
+					; in R0
+
+			BRZ x3031	; Loop through the following memory address as long as
+					; previous result is -
+
+			TRAP OUT	; Now I'm outputting whatever is here
+
+			ADD R1,R1,#1	; I'm adding 1 to the first register and storing it in R1
+
+GO_TO_TOP_OF_LOOP5	BRNZP x302C	; I need to loop back to this address as long as -,0,+ which will
+					; always happen
+
+			
+			AND R0,R0,#0	; I'm performing a bitwise and or if else branch for R0
+
+			BRNZP x303B	; Loop through following instructions untill you hit this address
+					; then you will come back through and go through this process again.
+
+			LEA R1, x306A	; I'm storing nothing into R1, probably to give it a clean slate.
+
+TOP_OF_LOOP6		LDR R0, R1,#0	; I'm loading R1 into R0 probably to output something to the console.
+
+			BRZ x3039	; I need to loop through the following addresses as long as previous
+					; result isn't negative, which it isn't.
+
+			TRAP OUT	; outputing something to the console
+
+			ADD R1,R1,#1	; I'm increasing the value of R1 by 1
+
+GO_TO_TOP_OF_LOOP6	BRNZP x3034	; At this point always loop back to this previous address.
+
+			AND R0,R0,#0	; I'm performing an if-else for this register.
+
+			TRAP HALT	; Stops the program
+
+			ADD R6, R6, #0	; This says R6 is R6 it isn't changed.	
+
+			BRP303F		; I need to loop through following addresses until I hit this
+					; address
+
+			ADD R6,R6,#1	; Increasing value of this Register by 1 and storing it in itself.
+
+GO_TO_TOP_OF_PROGRAM_LOOP	BRNZPx3001	; I need to loop all the way to the beginning of the program
+
+
+			LEA R0, x3084	; I'm loading nothing into this register
+
+			TRAP PUTS	; Prints an array of characters probably the characters
+					; the console displays "HAlting the processor."
+		
+			TRAP HALT	; Halts or ends the program		
+
+			
+			
+
+			
+
+			
+			
+			

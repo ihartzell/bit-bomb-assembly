@@ -1,0 +1,184 @@
+Registers:
+R0   x0045  69
+R1   x3048  12360
+R2   x0000  0
+R3   x0000  0
+R4   x0000  0
+R5   x0000  0
+R6   x0000  0
+R7   x300A  12298
+PC   x3000  12288
+IR   x6040  24640
+CC   P
+
+Memory:
+x3000  0101110110100000  x5DA0            AND    R6, R6, #0	; Sets R6 to 0, it ands the register out.
+x3001  1110001001000110  xE246            LEA    R1, x3048 	; address of Target sent to R1.   
+x3002  0110000001000000  x6040            LDR    R0, R1, #0     ; contents of memory from x3048 namely E is loaded into R0 . 
+x3003  0000010000000011  x0403            BRZ    x3007          ; Branch to the loop if the last result was zero.
+x3004  1111000000100001  xF021            TRAP   OUT            ; Writes the character currently in R0 onto the console display.
+x3005  0001001001100001  x1261            ADD    R1, R1, #1     ; Add R1 + 1 store in R1.
+x3006  0000111111111011  x0FFB            BRNZP  x3002          ; Branch to loop if the last result was zero, positive, or negative.
+x3007  0101000000100000  x5020            AND    R0, R0, #0     ; And R0 with 0.
+x3008  1110001010011101  xE29D            LEA    R1, x30A6      ; Address of target sent to x30A6.
+x3009  1111000000100000  xF020            TRAP   GETC           ; Waits for keyboard input and reads a single character and converts the value into an ASCII character.
+x300A  1111000000100001  xF021            TRAP   OUT            ; Writes the character in R0 onto the console.
+x300B  0111000001000000  x7040            STR    R0, R1, #0     ; Storing 0 + R1 in R0.
+x300C  0001001001100001  x1261            ADD    R1, R1, #1     ; Add R1 + 1 and putting that in R1.
+x300D  0010010000111001  x2439            LD     R2, x3047      ; Loading contents of address into R2.
+x300E  1001010010111111  x94BF            NOT    R2, R2         ; Condition codes set, based on wether the binary value taken as 2's complement integer = -, +, or 0 put into R2.
+x300F  0101010010000000  x5480            AND    R2, R2, R0     ; ANding R2 and R0 based on 0,+, or -.
+x3010  0000101111111000  x0BF8            BRNP   x3009          ; Branch to loop if the last result was + or -.
+x3011  0001001001111111  x127F            ADD    R1, R1, #-1    ; R1 -1 store in R1.
+x3012  0111010001000000  x7440            STR    R2, R1, #0     ; Store 0 + R1 in R2.
+x3013  1110001010010010  xE292            LEA    R1, x30A6      ; Memory address x30A6 sent to R1.
+x3014  1110010001111110  xE47E            LEA    R2, x3093      ; Memory address x3093 sent to R2.
+x3015  0001110110100000  x1DA0            ADD    R6, R6, #0     ; R6 + 0 put into R6.
+x3016  0000001000001011  x020B            BRP    x3022          ; Branch to loop if the last result was +.
+x3017  0110011001000000  x6640            LDR    R3, R1, #0     ; Load address of R1 + 0 into R3.
+x3018  0110100010000000  x6880            LDR    R4, R2, #0     ; Load address of R2 + 0 into R4.
+x3019  1001100100111111  x993F            NOT    R4, R4         ; Conditions codes set, -,+,0 stored into R4.
+x301A  0001100100100001  x1921            ADD    R4, R4, #1     ; R4 + 1 put into R4.
+x301B  0001100011000100  x18C4            ADD    R4, R3, R4     ; R3 + R4 put into R4.
+x301C  0000101000010110  x0A16            BRNP   x3033          ; Branch to loop if last result was - or +.
+x301D  0001011011100000  x16E0            ADD    R3, R3, #0     ; R3 + 0 put into R3.
+x301E  0000010000001100  x040C            BRZ    x302B          ; Branch to loop if previous result was -.
+x301F  0001001001100001  x1261            ADD    R1, R1, #1     ; R1 + 1 put into R1.
+x3020  0001010010100001  x14A1            ADD    R2, R2, #1     ; R2 + 1 put into R2.
+x3021  0000111111110101  x0FF5            BRNZP  x3017          ; Branch to loop if previous result was -,0,+.
+x3022  1110010000011111  xE41F            LEA    R2, x3042      ; What's in x3042 goes into R2.
+x3023  0110000010000000  x6080            LDR    R0, R2, #0     ; Load memory address of R2 + 0 into R0.
+x3024  0000010000000100  x0404            BRZ    x3029          ; Branch to loop if previous result was zero.
+x3025  0001000000111100  x103C            ADD    R0, R0, #-4    ; Add R0 -4 put in R0.
+x3026  0111000010000000  x7080            STR    R0, R2, #0     ; Store memory address of R2 + 0 into R0.
+x3027  0001010010100001  x14A1            ADD    R2, R2, #1     ; R2 + 1 put into R2.
+x3028  0000111111111010  x0FFA            BRNZP  x3023          ; Branch to loop if previous result was -,0,+. 
+x3029  1110010000011000  xE418            LEA    R2, x3042      ; What's in x3042 goes into R2.
+x302A  0000111111101100  x0FEC            BRNZP  x3017          ; Branch to loop if previous result was -,0,+.
+x302B  1110001001000100  xE244            LEA    R1, x3070      ; What's in x3070 goes to R1.
+x302C  0110000001000000  x6040            LDR    R0, R1, #0     ; Load Address of R1 + 0 into R0.
+x302D  0000010000000011  x0403            BRZ    x3031          ; Branch to loop if the last result was 0.
+x302E  1111000000100001  xF021            TRAP   OUT            ; Writes the character of R0 to the console.
+x302F  0001001001100001  x1261            ADD    R1, R1, #1     ; Add R1 + 1 put into R1.
+x3030  0000111111111011  x0FFB            BRNZP  x302C          ; Branch to loop if previous result was -,z,+.
+x3031  0101000000100000  x5020            AND    R0, R0, #0     ; And R0 AND 0 put into R0.
+x3032  0000111000001000  x0E08            BRNZP  x303B          ; Branch to loop if previous result was -,0,+.
+x3033  1110001000110110  xE236            LEA    R1, x306A      ; Load contents of address to R1.
+x3034  0110000001000000  x6040            LDR    R0, R1, #0     ; Load Address of R1 + 0 into R0.
+x3035  0000010000000011  x0403            BRZ    x3039          ; Branch to loop if the last result was -.
+x3036  1111000000100001  xF021            TRAP   OUT            ; Write the character of R0 to the console.
+x3037  0001001001100001  x1261            ADD    R1, R1, #1     ; R1 + 1 put into R1.
+x3038  0000111111111011  x0FFB            BRNZP  x3034          ; Branch to loop if the last result was -,0,+.
+x3039  0101000000100000  x5020            AND    R0, R0, #0     ; AND R0 AND 0.
+x303A  1111000000100101  xF025            TRAP   HALT           ; Stops execution.
+x303B  0001110110100000  x1DA0            ADD    R6, R6, #0     ; Add R6 + 0.
+x303C  0000001000000010  x0202            BRP    x303F          ; Branch to loop if last result was +.
+x303D  0001110110100001  x1DA1            ADD    R6, R6, #1     ; R6 + 1.
+x303E  0000111111000010  x0FC2            BRNZP  x3001          ; Branch to loop if last result was -,0,+.
+x303F  1110000001000100  xE044            LEA    R0, x3084      ; Load content of address to R0.
+x3040  1111000000100010  xF022            TRAP   PUTS           ; Prints an array of characters on the console.
+x3041  1111000000100101  xF025            TRAP   HALT           ; Stops execution.
+x3042  0000000001110001  x0071            NOP ;q                  
+x3043  0000000001110011  x0073            NOP ;s                  
+x3044  0000000001101000  x0068            NOP ;h                  
+x3045  0000000001101001  x0069            NOP ;i                  
+x3046  0000000000000000  x0000            NOP ;null                  
+x3047  0000000000001010  x000A            NOP ;new line                  
+x3048  0000000001000101  x0045            NOP	;x0045 = E, probably the start of Enter.                   
+x3049  0000000001101110  x006E            NOP   ; n                
+x304A  0000000001110100  x0074            NOP   ; t                
+x304B  0000000001100101  x0065            NOP   ; e                
+x304C  0000000001110010  x0072            NOP   ; r                
+x304D  0000000000100000  x0020            NOP   ; Space                
+x304E  0000000001010000  x0050            NOP   ; P                
+x304F  0000000001100001  x0061            NOP   ; a               
+x3050  0000000001110011  x0073            NOP   ; s               
+x3051  0000000001110011  x0073            NOP   ; s               
+x3052  0000000001110111  x0077            NOP   ; w               
+x3053  0000000001101111  x006F            NOP   ; o               
+x3054  0000000001110010  x0072            NOP   ; r               
+x3055  0000000001100100  x0064            NOP   ; d               
+x3056  0000000000100000  x0020            NOP   ; Space                
+x3057  0000000001100110  x0066            NOP   ; f                
+x3058  0000000001101111  x006F            NOP   ; o               
+x3059  0000000001101100  x006C            NOP   ; l               
+x305A  0000000001101100  x006C            NOP   ; l               
+x305B  0000000001101111  x006F            NOP   ; o               
+x305C  0000000001110111  x0077            NOP   ; w               
+x305D  0000000001100101  x0065            NOP   ; e               
+x305E  0000000001100100  x0064            NOP   ; d               
+x305F  0000000000100000  x0020            NOP   ; Space                
+x3060  0000000001100010  x0062            NOP   ; b                
+x3061  0000000001111001  x0079            NOP   ; y                
+x3062  0000000000100000  x0020            NOP   ; Space                
+x3063  0000000001000101  x0045            NOP   ; E                
+x3064  0000000001101110  x006E            NOP   ; n                
+x3065  0000000001110100  x0074            NOP   ; t                
+x3066  0000000001100101  x0065            NOP   ; e               
+x3067  0000000001110010  x0072            NOP   ; r                
+x3068  0000000000111010  x003A            NOP   ; :                
+x3069  0000000000000000  x0000            NOP   ; null                
+x306A  0000000001000010  x0042            NOP   ; B                
+x306B  0000000001101111  x006F            NOP   ; o                
+x306C  0000000001101111  x006F            NOP   ; o               
+x306D  0000000001101101  x006D            NOP   ; m               
+x306E  0000000000100001  x0021            NOP   ; !               
+x306F  0000000000000000  x0000            NOP   ; null               
+x3070  0000000001010000  x0050            NOP   ; P               
+x3071  0000000001100001  x0061            NOP   ; a                
+x3072  0000000001110011  x0073            NOP   ; s              
+x3073  0000000001110011  x0073            NOP   ; s                 
+x3074  0000000001110111  x0077            NOP   ; w               
+x3075  0000000001101111  x006F            NOP   ; o               
+x3076  0000000001110010  x0072            NOP   ; r               
+x3077  0000000001100100  x0064            NOP   ; d               
+x3078  0000000000100000  x0020            NOP   ; Space               
+x3079  0000000001000001  x0041            NOP   ; A               
+x307A  0000000001100011  x0063            NOP   ; c               
+x307B  0000000001100011  x0063            NOP   ; c               
+x307C  0000000001100101  x0065            NOP   ; e               
+x307D  0000000001110000  x0070            NOP   ; p               
+x307E  0000000001110100  x0074            NOP   ; t               
+x307F  0000000001100101  x0065            NOP   ; e               
+x3080  0000000001100100  x0064            NOP   ; d               
+x3081  0000000000100001  x0021            NOP   ; !               
+x3082  0000000000001010  x000A            NOP   ;New line                
+x3083  0000000000000000  x0000            NOP   ;Null                
+x3084  0000000001000010  x0042            NOP   ;B                
+x3085  0000000001101111  x006F            NOP   ;o                
+x3086  0000000001101101  x006D            NOP   ;m                
+x3087  0000000001100010  x0062            NOP   ;b                
+x3088  0000000000100000  x0020            NOP   ;Space                
+x3089  0000000001100100  x0064            NOP   ; d                
+x308A  0000000001100101  x0065            NOP   ; e                
+x308B  0000000001100110  x0066            NOP   ; f                
+x308C  0000000001110101  x0075            NOP   ; u                
+x308D  0000000001110011  x0073            NOP   ; s                
+x308E  0000000001100101  x0065            NOP   ; e                
+x308F  0000000001100100  x0064            NOP   ; d                
+x3090  0000000000101110  x002E            NOP   ; .                
+x3091  0000000000001010  x000A            NOP   ; New line                
+x3092  0000000000000000  x0000            NOP   ; null               
+x3093  0000000001100011  x0063            NOP   ; c                
+x3094  0000000001101001  x0069            NOP   ; i                
+x3095  0000000001110010  x0072            NOP   ; r               
+x3096  0000000001100011  x0063            NOP   ; c               
+x3097  0000000001101100  x006C            NOP   ; l               
+x3098  0000000001100101  x0065            NOP   ; e               
+x3099  0000000000000000  x0000            NOP   ; null                
+x309A  0000000001010011  x0053            NOP   ; S                
+x309B  0000000001110101  x0075            NOP   ; u               
+x309C  0000000001110000  x0070            NOP   ; p               
+x309D  0000000001100101  x0065            NOP   ; e               
+x309E  0000000001110010  x0072            NOP   ; r               
+x309F  0000000001010011  x0053            NOP   ; S               
+x30A0  0000000001100101  x0065            NOP   ; e                
+x30A1  0000000001100011  x0063            NOP   ; c               
+x30A2  0000000001110010  x0072            NOP   ; r               
+x30A3  0000000001100101  x0065            NOP   ; e               
+x30A4  0000000001110100  x0074            NOP   ; t               
+x30A5  0000000000000000  x0000            NOP   ;null                
+x30A6  0000000000000000  x0000            NOP                   
+x30A7  0000000000000000  x0000            NOP                   
+x30A8  0000000000000000  x0000            NOP                   
+x30A9  0000000000000000  x0000            NOP                   
